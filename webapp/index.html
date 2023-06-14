@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Slots App - Home</title>
+    <style>
+
+      .parking-space-top {
+        width: 50px;
+        height: 100px;
+        margin-left: -5px;
+        margin-bottom: 0px;
+        text-align: center;
+        font-weight: bold;
+        color: white;
+        border: none;
+        border-top: 5px solid black;
+        border-right: 4px solid black;
+        border-left: 4px solid black;
+        display: inline-block;
+      }
+      .parking-space-top.green {
+        background-color: green;
+      }
+  
+      .parking-space-top.red {
+        background-color: red;
+      }
+
+    </style>
+</head>
+<body>
+  <div>
+    <h1>Free Parking Slots</h1>
+    <div id="slot1" class="parking-space-top">1</div>
+    <div id="slot2" class="parking-space-top">2</div>
+  </div>
+
+    
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getDatabase, ref, child, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  // Your web app's Firebase
+    const firebaseConfig = {
+        apiKey: "Your apiKey",
+        authDomain: "Your authDomain",
+        databaseURL: "Your databaseURL",
+        projectId: "Your projectId",
+        storageBucket: "Your storageBucket",
+        messagingSenderId: "Your messagingSenderId",
+        appId: "Your appId",
+        measurementId: "Your measurementId"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const dataRef = ref(database, 'parking/stream'); // Replace with the actual path to your data in the Realtime Database
+
+    function updateDataContainer(data) {
+      if (data["space1"] === 0) {
+        slot1.classList.remove('green');
+        slot1.classList.add('red');
+    } else {
+        slot1.classList.remove('red');
+        slot1.classList.add('green');
+    }
+
+    if (data["space2"] === 0) {
+        slot2.classList.remove('green');
+        slot2.classList.add('red');
+    } else {
+        slot2.classList.remove('red');
+        slot2.classList.add('green');
+    }
+  }
+    
+    onValue(dataRef, (snapshot) => {
+    var data = snapshot.val();
+    updateDataContainer(data);
+  });    
+    </script>   
+</body>
+</html>
